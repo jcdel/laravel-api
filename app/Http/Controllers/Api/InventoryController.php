@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\InventoryRequest;
 use App\Inventory;
 
 class InventoryController extends Controller
@@ -26,10 +26,10 @@ class InventoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\InventoryRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(InventoryRequest $request)
     {
         $inventory = Inventory::create($request->all());
 
@@ -58,11 +58,11 @@ class InventoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\InventoryRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(InventoryRequest $request, $id)
     {
         $inventoryData = [
             'item' => $request->input('item'),

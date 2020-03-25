@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\CustomerRequest;
+use App\Http\Requests\OrderRequest;
 use App\Customer;
 use Carbon\Carbon;
 
@@ -27,10 +28,10 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CustomerRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
         $customer = Customer::create($request->all());
 
@@ -59,11 +60,11 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CustomerRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CustomerRequest $request, $id)
     {
         $customerData = [
             'first_name' => $request->input('first_name'),
@@ -97,7 +98,14 @@ class CustomerController extends Controller
         ], 200);
     }
 
-    public function order(Request $request, $id){
+    /**
+     * Create Order
+     *
+     * @param  \App\Http\Requests\OrderRequest  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function orders(OrderRequest $request, $id){
         $customer = Customer::find($id);
 
         $order = $customer->orders()->create([
