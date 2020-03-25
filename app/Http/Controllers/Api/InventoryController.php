@@ -18,7 +18,7 @@ class InventoryController extends Controller
         $inventories = Inventory::all();
 
         return response()->json([
-            'error' => false,
+            'sucess' => true,
             'inventories' => $inventories
         ], 200);
     }
@@ -34,9 +34,9 @@ class InventoryController extends Controller
         $inventory = Inventory::create($request->all());
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'inventory' => $inventory
-        ], 200);
+        ], 201);
     }
 
     /**
@@ -48,9 +48,15 @@ class InventoryController extends Controller
     public function show($id)
     {
         $inventory = Inventory::find($id);
+
+        if(!$inventory)
+            return response()->json([
+                'success' => false,
+                'message'  => 'record not found'
+            ], 404);
         
         return response()->json([
-            'error' => false,
+            'success' => true,
             'inventory'  => $inventory
         ], 200);
     }
@@ -64,18 +70,25 @@ class InventoryController extends Controller
      */
     public function update(InventoryRequest $request, $id)
     {
-        $inventoryData = [
-            'item' => $request->input('item'),
-            'description' => $request->input('description'),
-            'quantity_at_hand' => $request->input('quantity_at_hand'),
-            'price' => $request->input('price'),
+        $inventory = Inventory::find($id);
 
+        if(!$inventory)
+            return response()->json([
+                'success' => false,
+                'message'  => 'record not found',
+            ], 404);
+
+        $inventoryData = [
+            'item' => $request->item,
+            'description' => $request->description,
+            'quantity_at_hand' => $request->quantity_at_hand,
+            'price' => $request->price,
         ];
 
-        $inventory = Inventory::where('id', $id)->update($inventoryData);
+        $inventory = $inventory->update($inventoryData);
         
         return response()->json([
-            'error' => false,
+            'sucess' => true,
             'inventory'  => $inventory,
         ], 200);
     }
@@ -89,10 +102,17 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         $inventory = Inventory::find($id);
+
+        if(!$inventory)
+            return response()->json([
+                'success' => false,
+                'message'  => "record not found",
+            ], 404);
+
         $inventory->delete();
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'message'  => "The Inventory with the id $inventory->id has successfully been deleted.",
         ], 200);
     }

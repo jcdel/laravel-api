@@ -18,7 +18,7 @@ class OrderController extends Controller
         $orders = Order::all();
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'orders'  => $orders,
         ], 200);
     }
@@ -34,9 +34,9 @@ class OrderController extends Controller
         $inventory = Order::create($request->all());
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'order'  => $order,
-        ], 200);
+        ], 201);
     }
 
     /**
@@ -48,10 +48,16 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::find($id);
+
+        if(!$order)
+            return response()->json([
+                'success' => false,
+                'message'  => 'record not found'
+            ], 404);
         
         return response()->json([
-            'error' => false,
-            'order'  => $orders,
+            'success' => true,
+            'order'  => $order,
         ], 200);
     }
 
@@ -66,12 +72,18 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
 
-        $order->order_notes = $request->input('order_notes');
+        if(!$order)
+            return response()->json([
+                'success' => false,
+                'message'  => 'record not found',
+            ], 404);
+
+        $order->order_notes = $request->order_notes;
 
         $order->save();
         
         return response()->json([
-            'error' => false,
+            'success' => true,
             'order'  => $order,
         ], 200);
     }
@@ -85,10 +97,17 @@ class OrderController extends Controller
     public function destroy($id)
     {
         $orders = Order::find($id);
+
+        if(!$orders)
+            return response()->json([
+                'success' => false,
+                'message'  => "record not found",
+            ], 404);
+
         $orders->delete();
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'message'  => "The Order with the id $orders->id has successfully been deleted.",
         ], 200);
     }

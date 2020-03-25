@@ -38,7 +38,7 @@ class CustomerController extends Controller
         return response()->json([
             'error' => false,
             'customer' => $customer
-        ], 200);
+        ], 201);
     }
 
     /**
@@ -50,9 +50,15 @@ class CustomerController extends Controller
     public function show($id)
     {
         $customer = Customer::with('orders', 'orders.details')->find($id);
+        
+        if(!$customer)
+            return response()->json([
+                'success' => false,
+                'message' => 'record not found'
+            ], 404);
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'customer' => $customer
         ], 200);
     }
@@ -66,18 +72,26 @@ class CustomerController extends Controller
      */
     public function update(CustomerRequest $request, $id)
     {
+        $customer = Customer::find($id);
+
+        if(!$customer)
+            return response()->json([
+                'success' => false,
+                'message' => 'record not found'
+            ], 404);
+
         $customerData = [
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'email' => $request->input('email'),
-            'address' => $request->input('address'),
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'address' => $request->address,
         ];
 
-        $customer = Customer::where('id', $id)->update($customerData);
-        
+        $customer->update($customerData);
+
         return response()->json([
-            'error' => false,
-            'customer'  => $customer,
+            'success' => true,
+            'customer' => $customer
         ], 200);
     }
 
@@ -90,10 +104,17 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         $customer = Customer::find($id);
+
+        if(!$customer)
+            return response()->json([
+                'success' => false,
+                'message'  => "record not found",
+            ], 404);
+
         $customer->delete();
 
         return response()->json([
-            'error' => false,
+            'success' => true,
             'message'  => "The customer with the id $customer->id has been successfully deleted.",
         ], 200);
     }
@@ -105,12 +126,19 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function order(OrderRequest $request, $id){
+    public function order(OrderRequest $request, $id)
+    {
         $customer = Customer::find($id);
+        
+        if(!$cutomer)
+            return response()->json([
+                'success' => false,
+                'message'  => 'record not found',
+            ], 404);
 
         $order = $customer->orders()->create([
             'order_date' => Carbon::now(),
-            'order_notes' => $request->input('order_notes'),
+            'order_notes' => $request->order_notes,
         ]);
         
         $items = $request->input('items');
@@ -123,7 +151,7 @@ class CustomerController extends Controller
         }
         
         return response()->json([
-            'error' => false,
+            'success' => true,
             'order'  => $order,
         ], 200);
     }
