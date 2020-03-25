@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel API using Passport Authentication. - <small>baboy</small>
+                    Laravel API using Passport Authentication
                 </div>
             </div>
         </div>
