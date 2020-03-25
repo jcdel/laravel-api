@@ -19,13 +19,39 @@ use Illuminate\Support\Facades\Route;
 // });
 
 /* Login and Register Route **/
-Route::post('/login', 'Api\AuthController@login');
-Route::post('/register', 'Api\AuthController@register');
+Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function() {
+
+    Route::post('/login', 'AuthController@login');
+    Route::post('/register', 'AuthController@register');
+
+});
 
 
 /** Api Routes with Authentication */
-Route::group(['middleware' => 'auth:api'], function() {
+Route::group(['prefix' => 'v1', 'namespace' => 'Api', 'middleware' => 'auth:api'], function() {
 
     Route::post('logout', 'Api\AuthController@logout');
+
+    Route::apiResource('customers', 'CustomerController');
+    
+    Route::group(['prefix' => 'customers'],function(){
+        Route::get('/{id}/orders',[
+            'uses' => 'CustomerController@orders',
+            'as' => 'customers.orders',
+        ]);
+
+        Route::post('/{customer_id}/orders/{order_id}',[
+            'uses' => 'CustomerController@order',
+            'as' => 'orders.details',
+        ]);
+
+        Route::post('/{id}/orders',[
+            'uses' => 'CustomerController@order',
+            'as' => 'customers.orders',
+        ]);
+    });
+    
+    Route::apiResource('inventories', 'InventoryController');
+    Route::apiResource('orders', 'OrderController');
 
 });
