@@ -24,7 +24,6 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'order_date' =>     'required',
             'order_notes' =>    'required',
         ];
     }

@@ -30,16 +30,12 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function() {
 /** Api Routes with Authentication */
 Route::group(['prefix' => 'v1', 'namespace' => 'Api', 'middleware' => 'auth:api'], function() {
 
-    Route::post('logout', 'Api\AuthController@logout');
+    Route::post('logout', 'AuthController@logout');
 
     Route::apiResource('customers', 'CustomerController');
-    
-    Route::group(['prefix' => 'customers'],function(){
-        Route::get('/{id}/orders',[
-            'uses' => 'CustomerController@orders',
-            'as' => 'customers.orders',
-        ]);
 
+    Route::group(['prefix' => 'customers'],function(){
+        
         Route::post('/{customer_id}/orders/{order_id}',[
             'uses' => 'CustomerController@order',
             'as' => 'orders.details',

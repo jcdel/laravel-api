@@ -105,7 +105,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function orders(OrderRequest $request, $id){
+    public function order(OrderRequest $request, $id){
         $customer = Customer::find($id);
 
         $order = $customer->orders()->create([
